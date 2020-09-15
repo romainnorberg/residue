@@ -1,0 +1,39 @@
+{
+    "name": "romainnorberg/residue",
+    "description": "<package-description>",
+    "keywords": [
+        "<package-keyword>"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Romainnorberg\\Residue\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Romainnorberg\\Residue\\Tests\\": "tests"
+        }
+    },
+    "type": "library",
+    "require": {
+        "php": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0",
+        "spatie/phpunit-watcher": "^1.22"
+    },
+    "authors": [
+        {
+            "name": "Romain Norberg",
+            "email": "romainnorberg@gmail.com"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
