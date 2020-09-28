@@ -1,28 +1,91 @@
 # Residue
 
-***
+Divide a float into several parts, with distribution of any remainder.
 
-## Introduction
+#### Introduction
 
-### Installation
+This dependency-free package provides a `split` method to help you split float into parts, with the possible distribution of any remainder.
+
+It is also possible to specify a rounding of the divided amount, for example rounding by 0.05
+
+#### Installation
 
 You can install the package via composer:
 
 ```bash
-composer require romainnorberg/residue
+composer req romainnorberg/residue
 ```
 
-### Requirements
+#### Requirements
 
 This package require >= PHP 7.4
 
-### Residue VS Brick\Money
+#### Residue VS Brick\Money
 
-[todo]
+This package does not deal with the notion of currency and being more basic, it is up to 40 times faster on basic operations than the [brick/money](https://github.com/brick/money) package
+
+Benchmarks: [residue-vs-brick-money](https://github.com/romainnorberg/residue-vs-brick-money)
 
 ## Usage / examples
 
-[todo]
+#### Basic split
+
+```php
+$residue = (new Residue(100))->divideBy(3)->split(); // -> 33.33, 33.33, 33.34
+```
+
+#### Split with rounding (and remainder)
+
+```php
+$residue = (new Residue(100))
+            ->divideBy(3)
+            ->step(0.05)
+            ->split(); // -> 33.35, 33.35, 33.30
+```
+
+With remainder:
+```php
+$residue = (new Residue(7.315))
+            ->divideBy(3)
+            ->decimal(3)
+            ->step(0.05)
+            ->split(); // -> [2.45, 2.45, 2.40]
+
+...
+
+$residue->getStepRemainder(); // -> 0.015
+```
+
+#### Generator
+
+This package uses [generator](https://www.php.net/manual/en/language.generators.syntax.php) to reduce the memory used
+
+With foreach statement (using generator):
+```php
+$residue = (new Residue(100))->divideBy(3);
+foreach ($residue->split() as $part) {
+    var_dump($part);
+}
+
+float(33.33)
+float(33.33)
+float(33.34)
+```
+
+To array:
+```php
+$residue = (new Residue(100))->divideBy(3);
+var_dump($residue->toArray());
+
+array(3) {
+  [0]=>
+  float(33.33)
+  [1]=>
+  float(33.33)
+  [2]=>
+  float(33.34)
+}
+```
 
 ## Testing
 

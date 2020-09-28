@@ -11,6 +11,7 @@ namespace Romainnorberg\Residue;
 
 use Generator;
 use InvalidArgumentException;
+use Romainnorberg\Residue\Exception\CannotGetRemainderException;
 
 final class Residue
 {
@@ -159,6 +160,14 @@ final class Residue
 
     public function getStepRemainder(): ?float
     {
+        if (!$this->hasStep()) {
+            return $this->stepRemainder ?? null;
+        }
+
+        if (!isset($this->stepRemainder)) {
+            throw new CannotGetRemainderException('You must iterate through the split() method or call toArray() method to be able to get the remaining value.');
+        }
+
         return $this->stepRemainder;
     }
 }

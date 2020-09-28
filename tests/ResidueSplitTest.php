@@ -23,12 +23,11 @@ class ResidueSplitTest extends TestCase
         int $divider,
         ?int $decimalValue,
         array $expected
-    ): void
-    {
+    ): void {
         $split = (new Residue($value))
             ->divideBy($divider);
 
-        if ($decimalValue !== null) {
+        if (null !== $decimalValue) {
             $split->decimal($decimalValue);
         }
 
@@ -45,7 +44,7 @@ class ResidueSplitTest extends TestCase
                 33.33,
                 33.33,
                 33.34,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/2' => [
@@ -55,7 +54,7 @@ class ResidueSplitTest extends TestCase
             [
                 50.00,
                 49.99,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/3' => [
@@ -66,7 +65,7 @@ class ResidueSplitTest extends TestCase
                 33.33,
                 33.33,
                 33.33,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/4' => [
@@ -78,7 +77,7 @@ class ResidueSplitTest extends TestCase
                 25.00,
                 25.00,
                 24.99,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '0.02/4' => [
@@ -90,7 +89,7 @@ class ResidueSplitTest extends TestCase
                 0.01,
                 0.0,
                 0.0,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '100.123/4' => [
@@ -102,7 +101,7 @@ class ResidueSplitTest extends TestCase
                 25.031,
                 25.031,
                 25.030,
-            ] // expected result
+            ], // expected result
         ];
     }
 
@@ -115,12 +114,11 @@ class ResidueSplitTest extends TestCase
         int $divider,
         ?int $decimalValue,
         array $expected
-    ): void
-    {
+    ): void {
         $split = (new Residue($value))
             ->divideBy($divider);
 
-        if ($decimalValue !== null) {
+        if (null !== $decimalValue) {
             $split->decimal($decimalValue);
         }
 
@@ -137,7 +135,7 @@ class ResidueSplitTest extends TestCase
                 -33.33,
                 -33.33,
                 -33.34,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/2' => [
@@ -147,7 +145,7 @@ class ResidueSplitTest extends TestCase
             [
                 -50.00,
                 -49.99,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/3' => [
@@ -158,7 +156,7 @@ class ResidueSplitTest extends TestCase
                 -33.33,
                 -33.33,
                 -33.33,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '99.99/4' => [
@@ -170,7 +168,7 @@ class ResidueSplitTest extends TestCase
                 -25.00,
                 -25.00,
                 -24.99,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '0.02/4' => [
@@ -182,7 +180,7 @@ class ResidueSplitTest extends TestCase
                 -0.01,
                 -0.0,
                 -0.0,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '100.123/4' => [
@@ -194,9 +192,10 @@ class ResidueSplitTest extends TestCase
                 -25.031,
                 -25.031,
                 -25.030,
-            ] // expected result
+            ], // expected result
         ];
     }
+
     /**
      * @test
      * @dataProvider dataProviderStepValues
@@ -208,19 +207,18 @@ class ResidueSplitTest extends TestCase
         float $step,
         array $expected,
         ?float $expectedStepRemainder = null
-    ): void
-    {
+    ): void {
         $residue = (new Residue($value))
             ->divideBy($divider)
             ->step($step);
 
-        if ($decimalValue !== null) {
+        if (null !== $decimalValue) {
             $residue->decimal($decimalValue);
         }
 
         $this->assertEquals($expected, $residue->toArray());
 
-        if ($expectedStepRemainder !== null) {
+        if (null !== $expectedStepRemainder) {
             $this->assertEquals($expectedStepRemainder, $residue->getStepRemainder());
         }
     }
@@ -236,7 +234,7 @@ class ResidueSplitTest extends TestCase
                 33.35,
                 33.35,
                 33.30,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '0.15/4' => [
@@ -249,7 +247,7 @@ class ResidueSplitTest extends TestCase
                 0.05,
                 0.05,
                 0.00,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '12.25/2' => [
@@ -260,7 +258,7 @@ class ResidueSplitTest extends TestCase
             [
                 6.15,
                 6.10,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '7.315/3 - 0.005' => [
@@ -272,7 +270,7 @@ class ResidueSplitTest extends TestCase
                 2.440,
                 2.440,
                 2.435,
-            ] // expected result
+            ], // expected result
         ];
 
         yield '7.315/3 - 0.05' => [
@@ -285,7 +283,7 @@ class ResidueSplitTest extends TestCase
                 2.45,
                 2.40,
             ], // expected result
-            0.015 // expected remainder
+            0.015, // expected remainder
         ];
     }
 }
