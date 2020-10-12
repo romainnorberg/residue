@@ -1,4 +1,10 @@
-# Residue
+# Residue ⚖️
+
+<p class="rich-diff-level-zero" align="left">
+        <a href="https://packagist.org/packages/romainnorberg/residue" rel="nofollow" class="rich-diff-level-one"><img src="https://img.shields.io/packagist/v/romainnorberg/residue.svg?style=flat-square" alt="Latest Version on Packagist" style="max-width:100%;"></a>
+        <a href="https://github.com/romainnorberg/residue/actions?query=workflow%3Arun-tests+branch%3Amaster" class="rich-diff-level-one"><img src="https://img.shields.io/github/workflow/status/romainnorberg/residue/run-tests?label=tests" alt="GitHub Tests Action Status" style="max-width:100%;"></a>
+    <a href="https://codecov.io/gh/romainnorberg/residue" rel="nofollow" class="rich-diff-level-one"><img src="https://codecov.io/gh/romainnorberg/residue/branch/master/graph/badge.svg" alt="codecov" style="max-width:100%;"></a>
+    <a href="https://packagist.org/packages/romainnorberg/residue/stats" rel="nofollow" class="rich-diff-level-one"><img src="https://img.shields.io/packagist/dt/romainnorberg/residue.svg?style=flat-square" alt="Total Downloads" style="max-width:100%;"></a></p>
 
 Divide a float into several parts, with distribution of any remainder.
 

@@ -1,8 +1,10 @@
 {
     "name": "romainnorberg/residue",
-    "description": "<package-description>",
+    "description": "Divide a float into several parts, with distribution of any remainder",
     "keywords": [
-        "<package-keyword>"
+        "php",
+        "split",
+        "residue"
     ],
     "license": "MIT",
     "autoload": {
