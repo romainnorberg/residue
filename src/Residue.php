@@ -57,7 +57,7 @@ final class Residue
         return $this;
     }
 
-    public function split(): ?Generator
+    public function split(): Generator
     {
         if (!$this->hasStep()) {
             return $this->splitWithoutStep();
