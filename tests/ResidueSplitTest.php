@@ -282,5 +282,18 @@ class ResidueSplitTest extends TestCase
             ], // expected result
             0.015, // expected remainder
         ];
+
+        yield '99.99/3 - 0' => [
+            99.99, // value
+            3, // divide
+            2, // decimal value
+            0, // step
+            [
+                33.33,
+                33.33,
+                33.33,
+            ], // expected result
+            0, // expected remainder
+        ];
     }
 }
