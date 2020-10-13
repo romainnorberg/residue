@@ -1,6 +1,6 @@
-on: [push]
-
 name: Check styling
+
+on: [push, pull_request]
 
 jobs:
   php-cs-fixer:
