@@ -22,7 +22,7 @@ class ResidueSplitExceptionTest extends TestCase
     {
         $this->expectException(CannotGetRemainderException::class);
 
-        $residue = (new Residue(7.315))
+        $residue = Residue::create(7.315)
             ->divideBy(3)
             ->decimal(3)
             ->step(0.05);

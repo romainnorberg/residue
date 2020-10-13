@@ -37,13 +37,13 @@ Benchmarks: [residue-vs-brick-money](https://github.com/romainnorberg/residue-vs
 #### Basic split
 
 ```php
-$residue = (new Residue(100))->divideBy(3)->split(); // -> 33.33, 33.33, 33.34
+$residue = Residue::create(100)->divideBy(3)->split(); // -> 33.33, 33.33, 33.34
 ```
 
 #### Split with rounding (and remainder)
 
 ```php
-$residue = (new Residue(100))
+$residue = Residue::create(100)
             ->divideBy(3)
             ->step(0.05)
             ->split(); // -> 33.35, 33.35, 33.30
@@ -51,7 +51,7 @@ $residue = (new Residue(100))
 
 With remainder:
 ```php
-$residue = (new Residue(7.315))
+$residue = Residue::create(7.315)
             ->divideBy(3)
             ->decimal(3)
             ->step(0.05)
@@ -68,7 +68,7 @@ This package uses [generator](https://www.php.net/manual/en/language.generators.
 
 With foreach statement (using generator):
 ```php
-$residue = (new Residue(100))->divideBy(3);
+$residue = Residue::create(100)->divideBy(3);
 foreach ($residue->split() as $part) {
     var_dump($part);
 }
@@ -80,7 +80,7 @@ float(33.34)
 
 To array:
 ```php
-$residue = (new Residue(100))->divideBy(3);
+$residue = Residue::create(100)->divideBy(3);
 var_dump($residue->toArray());
 
 array(3) {

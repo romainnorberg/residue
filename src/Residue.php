@@ -28,6 +28,11 @@ final class Residue
         $this->value = abs($value);
     }
 
+    public static function create(float $value): self
+    {
+        return new self($value);
+    }
+
     public function divideBy(int $divider): self
     {
         $this->divider = $divider;
@@ -67,7 +72,7 @@ final class Residue
     }
 
     /**
-     * donne la limite à laquelle le total du résultat de la division a déjà été retournée entièrement.
+     * Gives the limit at which the total of the result of the division has already been fully returned.
      */
     public function obstacle(): int
     {

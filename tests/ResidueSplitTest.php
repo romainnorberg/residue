@@ -16,9 +16,9 @@ class ResidueSplitTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider dataProviderPositiveValues
+     * @dataProvider dataProviderValues
      */
-    public function it_should_split_positive_values(
+    public function it_should_split(
         float $value,
         int $divider,
         ?int $decimalValue,
@@ -34,7 +34,27 @@ class ResidueSplitTest extends TestCase
         $this->assertEquals($expected, $split->toArray());
     }
 
-    public function dataProviderPositiveValues()
+    /**
+     * @test
+     * @dataProvider dataProviderValues
+     */
+    public function it_should_split_with_static_constructor(
+        float $value,
+        int $divider,
+        ?int $decimalValue,
+        array $expected
+    ): void {
+        $split = Residue::create($value)
+            ->divideBy($divider);
+
+        if (null !== $decimalValue) {
+            $split->decimal($decimalValue);
+        }
+
+        $this->assertEquals($expected, $split->toArray());
+    }
+
+    public function dataProviderValues()
     {
         yield '100/3' => [
             100, // value
@@ -103,30 +123,7 @@ class ResidueSplitTest extends TestCase
                 25.030,
             ], // expected result
         ];
-    }
 
-    /**
-     * @test
-     * @dataProvider dataProviderNegativeValues
-     */
-    public function it_should_split_negative_values(
-        float $value,
-        int $divider,
-        ?int $decimalValue,
-        array $expected
-    ): void {
-        $split = (new Residue($value))
-            ->divideBy($divider);
-
-        if (null !== $decimalValue) {
-            $split->decimal($decimalValue);
-        }
-
-        $this->assertEquals($expected, $split->toArray());
-    }
-
-    public function dataProviderNegativeValues()
-    {
         yield '-100/3' => [
             -100, // value
             3, // divide
@@ -138,7 +135,7 @@ class ResidueSplitTest extends TestCase
             ], // expected result
         ];
 
-        yield '99.99/2' => [
+        yield '-99.99/2' => [
             -99.99, // value
             2, // divide
             2, // decimal value
@@ -148,7 +145,7 @@ class ResidueSplitTest extends TestCase
             ], // expected result
         ];
 
-        yield '99.99/3' => [
+        yield '-99.99/3' => [
             -99.99, // value
             3, // divide
             2, // decimal value
@@ -159,7 +156,7 @@ class ResidueSplitTest extends TestCase
             ], // expected result
         ];
 
-        yield '99.99/4' => [
+        yield '-99.99/4' => [
             -99.99, // value
             4, // divide
             2, // decimal value
@@ -171,7 +168,7 @@ class ResidueSplitTest extends TestCase
             ], // expected result
         ];
 
-        yield '0.02/4' => [
+        yield '-0.02/4' => [
             -0.02, // value
             4, // divide
             null, // decimal value -> default to 2
@@ -183,7 +180,7 @@ class ResidueSplitTest extends TestCase
             ], // expected result
         ];
 
-        yield '100.123/4' => [
+        yield '-100.123/4' => [
             -100.123, // value
             4, // divide
             3, // decimal value
@@ -208,7 +205,7 @@ class ResidueSplitTest extends TestCase
         array $expected,
         ?float $expectedStepRemainder = null
     ): void {
-        $residue = (new Residue($value))
+        $residue = Residue::create($value)
             ->divideBy($divider)
             ->step($step);
 
