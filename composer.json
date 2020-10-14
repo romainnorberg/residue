@@ -22,6 +22,8 @@
         "php": "^7.4"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.49",
         "phpunit/phpunit": "^8.0",
         "spatie/phpunit-watcher": "^1.22"
     },
@@ -33,7 +35,16 @@
     ],
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "testv": "vendor/bin/phpunit --testdox"
+        "testv": "vendor/bin/phpunit --testdox",
+        "testch": "vendor/bin/phpunit --coverage-html .coverage",
+        "phpstan": "vendor/bin/phpstan analyse --level=max src",
+        "phpcs-fix": "vendor/bin/php-cs-fixer fix",
+        "phpcs-dry-run": "vendor/bin/php-cs-fixer fix --dry-run",
+        "test-pipe": [
+            "@phpcs-dry-run",
+            "@phpstan",
+            "@test"
+        ]
     },
     "config": {
         "sort-packages": true,

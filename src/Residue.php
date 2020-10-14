@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Residue package.
  * (c) Romain Norberg <romainnorberg@gmail.com>
@@ -10,11 +12,16 @@
 namespace Romainnorberg\Residue;
 
 use Generator;
-use InvalidArgumentException;
 use Romainnorberg\Residue\Exception\CannotGetRemainderException;
+use Romainnorberg\Residue\Exception\DecimalException;
+use Romainnorberg\Residue\Exception\DivideByZeroException;
+use Romainnorberg\Residue\Exception\StepException;
 
 final class Residue
 {
+    /**
+     * @var float|int
+     */
     private $value;
     private int $divider;
     private int $decimal = 2;
@@ -35,6 +42,9 @@ final class Residue
 
     public function divideBy(int $divider): self
     {
+        if (0 === $divider) {
+            throw new DivideByZeroException();
+        }
         $this->divider = $divider;
 
         return $this;
@@ -43,7 +53,7 @@ final class Residue
     public function step(float $step): self
     {
         if ($step < 0) {
-            throw new InvalidArgumentException('Step value must be positive');
+            throw new StepException('Step value must be positive');
         }
 
         $this->step = $step;
@@ -54,7 +64,7 @@ final class Residue
     public function decimal(int $decimal): self
     {
         if ($decimal < 0) {
-            throw new InvalidArgumentException('Decimal round value must be positive');
+            throw new DecimalException('Decimal round value must be positive');
         }
 
         $this->decimal = $decimal;
