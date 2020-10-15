@@ -6,7 +6,10 @@
     <a href="https://codecov.io/gh/romainnorberg/residue" rel="nofollow" class="rich-diff-level-one"><img src="https://codecov.io/gh/romainnorberg/residue/branch/master/graph/badge.svg" alt="codecov" style="max-width:100%;"></a>
     <a href="https://packagist.org/packages/romainnorberg/residue/stats" rel="nofollow" class="rich-diff-level-one"><img src="https://img.shields.io/packagist/dt/romainnorberg/residue.svg?style=flat-square" alt="Total Downloads" style="max-width:100%;"></a></p>
 
-Divide a float into several parts, with distribution of any remainder.
+### Divide a float into several parts, with distribution of any remainder.
+    
+<img src=".github/media/gtihub-repository.jpg?raw=true" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%" height="100%">
+
 
 #### Introduction
 
@@ -50,6 +53,7 @@ $residue = Residue::create(100)
 ```
 
 With remainder:
+
 ```php
 $residue = Residue::create(7.315)
             ->divideBy(3)
@@ -115,6 +119,7 @@ If you discover any security related issues, please email romainnorberg@gmail.co
 
 - [Romain Norberg](https://github.com/romainnorberg)
 - [All Contributors](../../contributors)
+- Illustration from Refactoring.Guru https://refactoring.guru/
 
 ## License
 
