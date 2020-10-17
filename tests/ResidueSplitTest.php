@@ -468,4 +468,39 @@ class ResidueSplitTest extends TestCase
             0.03, // reminder
         ];
     }
+
+    /**
+     * @test
+     */
+    public function it_should_split_test_case(): void
+    {
+        // work as expected
+        $residue = Residue::create(7.315)
+            ->divideBy(3)
+            ->decimal(3)
+            ->step(0.050);
+
+        $this->assertEquals([2.45, 2.45, 2.4], $residue->toArray());
+        $this->assertEquals(0.015, $residue->getRemainder());
+
+        // not fail anymore
+        $residue = Residue::create(7.315)
+            ->divideBy(3)
+            ->step(0.050) // <-- step before decimal
+            ->decimal(3);
+
+        $this->assertEquals([2.45, 2.45, 2.4], $residue->toArray());
+        $this->assertEquals(0.015, $residue->getRemainder());
+
+        // work as expected
+        $residue = Residue::create(7.315)
+            ->divideBy(3)
+            ->step(0.050) // <-- step before decimal
+            ->decimal(1);
+
+        //One should expect a result of this type :
+
+        $this->assertEquals([2.5, 2.4, 2.4], $residue->toArray());
+        $this->assertEquals(0.015, $residue->getRemainder());
+    }
 }

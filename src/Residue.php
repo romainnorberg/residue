@@ -22,11 +22,11 @@ use Romainnorberg\Residue\Exception\StepException;
 final class Residue implements ResidueInterface
 {
     private float $value;
-    private bool $isNegative = false;
+    private bool $isNegative;
     private int $divider = 1;
     private int $decimal = 2;
-    private float $step = 0.01; // Consistent with decimal
-    private ?float $remainder = null;
+    private float $step;
+    private float $remainder;
 
     public function __construct(float $value)
     {
@@ -51,8 +51,8 @@ final class Residue implements ResidueInterface
      *  - S = S || 10^(-Dc)
      *  - Dc = Dc || GetNumberOfDecimalOfStep(S)
      *
-     *  - rm + p¹ + p² + ... p^n = N (where rm the reminder, p a part and n in range [1, Dv])
-     *  - rm = N - p¹ - p² - ... p^n (same as above - rewriting order to lookup at reminder)
+     *  - rm + p¹ + p² + ... p^n = N (where rm the remainder, p a part and n in range [1, Dv])
+     *  - rm = N - p¹ - p² - ... p^n (same as above - rewriting order to lookup at remainder)
      *
      *  - Ns = ⌊N / S⌋ (the stepped Number) or the max number of steps
      *
@@ -91,6 +91,10 @@ final class Residue implements ResidueInterface
     {
         if (!\in_array($mode, self::SPLIT_MODES, true)) {
             throw new ResidueModeException(sprintf('Accepted modes are : %s', implode(', ', self::SPLIT_MODES)));
+        }
+
+        if (!isset($this->step)) {
+            $this->decimal($this->decimal);
         }
 
         $maxNumberOfSteps = floor($this->value / $this->step);
@@ -141,17 +145,20 @@ final class Residue implements ResidueInterface
             throw new DecimalException('Decimal round value must be positive');
         }
 
-        $this->decimal = $decimal;
+        $stepCandidate = 10 ** -$decimal;
 
-        $this->step = 10 ** -$decimal;
+        if (!isset($this->step) || $stepCandidate > $this->step) {
+            $this->decimal = $decimal;
+            $this->step = $stepCandidate;
+        }
 
         return $this;
     }
 
     public function getRemainder(): float
     {
-        if (null === $this->remainder) {
-            throw new CannotGetRemainderException('Split must have to be called before getting the remainder');
+        if (!isset($this->remainder)) {
+            throw new CannotGetRemainderException('You should iterate over `split` method or call `toArray` before getting the remainder');
         }
 
         return $this->remainder;
@@ -162,12 +169,12 @@ final class Residue implements ResidueInterface
         return iterator_to_array($this->split($mode), false);
     }
 
-    protected function isNegative(float $value): bool
+    private function isNegative(float $value): bool
     {
         return $value < 0.0;
     }
 
-    protected function getDecimalLength(float $float): int
+    private function getDecimalLength(float $float): int
     {
         $strFloat = (string) $float;
         if (false === mb_strpos($strFloat, '.')) {
@@ -177,7 +184,7 @@ final class Residue implements ResidueInterface
         return mb_strlen(explode('.', $strFloat)[1]);
     }
 
-    protected function calculateRemainder(string $mode, float $maxNumberOfSteps, float $defaultNumberOfSteps): float
+    private function calculateRemainder(string $mode, float $maxNumberOfSteps, float $defaultNumberOfSteps): float
     {
         $decimalLengthOfValue = $this->getDecimalLength($this->value);
         $remainderDecimalLength = $this->decimal < $decimalLengthOfValue ? $decimalLengthOfValue : $this->decimal;
