@@ -97,6 +97,19 @@ class ResidueSplitTest extends TestCase
 
     public function dataProviderAllocateValues()
     {
+        yield '-4/3 - Step 0.01' => [
+            -4, // value
+            3, // divide
+            null, // decimal value
+            null, // step
+            [
+                -1.34,
+                -1.33,
+                -1.33,
+            ], // expected result
+            0, // remainder
+        ];
+
         yield '1/1 - Step 0.01' => [
             1, // value
             1, // divide
@@ -296,6 +309,19 @@ class ResidueSplitTest extends TestCase
 
     public function dataProviderEquityValues()
     {
+        yield '-4/3 - Step 0.01' => [
+            -4, // value
+            3, // divide
+            null, // decimal value
+            null, // step
+            [
+                -1.33,
+                -1.33,
+                -1.33,
+            ], // expected result
+            -0.01, // remainder
+        ];
+
         yield '1/1 - Step 0.01' => [
             1, // value
             1, // divide

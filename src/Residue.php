@@ -40,52 +40,38 @@ final class Residue implements ResidueInterface
     }
 
     /**
-     * f(N, Dv, Dc, S) with :
-     *  - N the number
-     *  - Dv the divider
-     *  - Dc the number of decimals
-     *  - S the step size.
+     * split represent the function `f(N, Dv, Dc, S, M)`
+     * with :
+     *  - `N` is the number given to Residue constructor
+     *  - `Dv` the divider given to divideBy Residue method
+     *  - `Dc` the number of decimals whom can be set through decimals method and as default value of `2`
+     *  - `S` the step size whom can be set to through step method and as no default value
+     *  - `M` the split mode, is one value of set [allocate, equity]
      *
-     * This function is described by this equations :
-     * [
-     *  - S = S || 10^(-Dc)
-     *  - Dc = Dc || GetNumberOfDecimalOfStep(S)
+     * This function is described by this set of equations :
+     *  - rm + ∑pⁿ = N
+     *  where : - `rm` is the remainder
+     *          - `p` a part with n in the range [1, Dv]
      *
-     *  - rm + p¹ + p² + ... p^n = N (where rm the remainder, p a part and n in range [1, Dv])
-     *  - rm = N - p¹ - p² - ... p^n (same as above - rewriting order to lookup at remainder)
+     *  - Ns = ⌊N / S⌋
+     *  with : - `Ns` is the max number of steps
      *
-     *  - Ns = ⌊N / S⌋ (the stepped Number) or the max number of steps
+     *  - DNs = ⌊Ns / Dv⌋
+     *  with : - `DNs` is the default number of steps by parts (pⁿ)
      *
-     *  - dNs = ⌊Ns / Dv⌋ default steps number by parts
+     *  - pⁿ = S * xⁿ
+     *  where : - `xⁿ` is an integer with n in range [1, Dv]
      *
-     *  - p^n = S * x^n (where x is an integer and n in range [1, Dv]) This is the value of p¹ ... p² ...
+     *  - xⁿ = DNs + (((M ↔ allocate) ∧ (DNs * Dv + n <= Ns)) ⇒ 1) ∨ 0
      *
-     *  - x^n = dNs + { 1 }IF[ (dNs * Dv + n) <= Ns) && (ALLOCATE === MODE) ]
-     *
-     *  fmod is a shit!!!
-     *  php > echo fmod(100.1, 0.1);
-     *  0.099999999999989
-     *  Should be 0!
-     *
-     *  - rm according to the first definition above can now be extended to
-     *    - rm = N - Ns * S for ALLOCATE
-     *    or
-     *    - rm = N - dNs * Dv * S for EQUITY
-     * ]
+     *  According to previous definitions `rm` can be now extended to :
+     *  - rm = ((M ↔ allocate) ⇒ N - Ns * S) ∨ ((M ↔ equity) ⇒ N - dNs * Dv * S)
      *
      * And perform this algorithm :
-     *  - Define S when S or Dc is set
-     *  - Define Dc when Dc or S is set
-     *
-     *  On split or before doing split (these value can be recalculated each time that S or Dc change)
-     *  TODO choice during implementation
-     *
-     *  - Define ns
-     *  - Define dNs
-     *
-     *  - Generate generator for parts
-     *
-     *  - Define rm according "to mode (so, split must be called)"
+     *  - Defining Ns
+     *  - Defining Dns
+     *  - Defining rm according to `M`
+     *  - Iterate [n as 1 ... Dv] : yield pⁿ
      */
     public function split(string $mode = self::SPLIT_MODE_ALLOCATE): Generator
     {
