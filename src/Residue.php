@@ -22,7 +22,7 @@ use Romainnorberg\Residue\Exception\StepException;
 final class Residue implements ResidueInterface
 {
     private float $value;
-    private bool $isNegative = false;
+    private bool $isNegative;
     private int $divider = 1;
     private int $decimal = 2;
     private float $step = 0.01; // Consistent with decimal
