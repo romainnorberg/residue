@@ -12,7 +12,8 @@ namespace Romainnorberg\Residue\Tests;
 use PHPUnit\Framework\TestCase;
 use Romainnorberg\Residue\Exception\CannotGetRemainderException;
 use Romainnorberg\Residue\Exception\DecimalException;
-use Romainnorberg\Residue\Exception\DivideByZeroException;
+use Romainnorberg\Residue\Exception\DivideException;
+use Romainnorberg\Residue\Exception\ResidueModeException;
 use Romainnorberg\Residue\Exception\StepException;
 use Romainnorberg\Residue\Residue;
 
@@ -21,27 +22,37 @@ class ResidueExceptionTest extends TestCase
     /**
      * @test
      */
-    public function it_should_throw_remainder_exception(): void
+    public function it_should_throw_residue_mode_exception(): void
     {
-        $this->expectException(CannotGetRemainderException::class);
+        $this->expectException(ResidueModeException::class);
 
-        $residue = Residue::create(7.315)
-            ->divideBy(3)
-            ->decimal(3)
-            ->step(0.05);
-
-        $residue->getStepRemainder();
+        Residue::create(100)
+            ->toArray('none existing mode')
+        ;
     }
 
     /**
      * @test
      */
-    public function it_should_throw_divide_by_zero_exception(): void
+    public function it_should_throw_cannot_get_remainder_exception(): void
     {
-        $this->expectException(DivideByZeroException::class);
+        $this->expectException(CannotGetRemainderException::class);
 
         Residue::create(100)
-            ->divideBy(0);
+            ->getRemainder()
+        ;
+    }
+
+    /**
+     * @test
+     * @dataProvider provideDataForDivideException
+     */
+    public function it_should_throw_divide_exception(int $minusThanOne): void
+    {
+        $this->expectException(DivideException::class);
+
+        Residue::create(100)
+            ->divideBy($minusThanOne);
     }
 
     /**
@@ -67,5 +78,13 @@ class ResidueExceptionTest extends TestCase
         Residue::create(100)
             ->divideBy(3)
             ->decimal(-1);
+    }
+
+    public function provideDataForDivideException()
+    {
+        return [
+            [0],
+            [-1],
+        ];
     }
 }

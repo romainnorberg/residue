@@ -9,6 +9,8 @@
 
 namespace Romainnorberg\Residue\Exception;
 
-class CannotGetRemainderException extends \LogicException
+use InvalidArgumentException;
+
+class DivideException extends InvalidArgumentException
 {
 }

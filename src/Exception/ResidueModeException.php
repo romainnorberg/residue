@@ -11,6 +11,6 @@ namespace Romainnorberg\Residue\Exception;
 
 use InvalidArgumentException;
 
-class DivideByZeroException extends InvalidArgumentException
+class ResidueModeException extends InvalidArgumentException
 {
 }

@@ -12,22 +12,21 @@ declare(strict_types=1);
 namespace Romainnorberg\Residue;
 
 use Generator;
+use Romainnorberg\Residue\Contracts\ResidueInterface;
 use Romainnorberg\Residue\Exception\CannotGetRemainderException;
 use Romainnorberg\Residue\Exception\DecimalException;
-use Romainnorberg\Residue\Exception\DivideByZeroException;
+use Romainnorberg\Residue\Exception\DivideException;
+use Romainnorberg\Residue\Exception\ResidueModeException;
 use Romainnorberg\Residue\Exception\StepException;
 
-final class Residue
+final class Residue implements ResidueInterface
 {
-    /**
-     * @var float|int
-     */
-    private $value;
-    private int $divider;
+    private float $value;
+    private bool $isNegative = false;
+    private int $divider = 1;
     private int $decimal = 2;
-    private bool $isNegative;
-    private float $step = 0.0;
-    private ?float $stepRemainder;
+    private float $step = 0.01; // Consistent with decimal
+    private ?float $remainder = null;
 
     public function __construct(float $value)
     {
@@ -40,10 +39,83 @@ final class Residue
         return new self($value);
     }
 
+    /**
+     * f(N, Dv, Dc, S) with :
+     *  - N the number
+     *  - Dv the divider
+     *  - Dc the number of decimals
+     *  - S the step size.
+     *
+     * This function is described by this equations :
+     * [
+     *  - S = S || 10^(-Dc)
+     *  - Dc = Dc || GetNumberOfDecimalOfStep(S)
+     *
+     *  - rm + p¹ + p² + ... p^n = N (where rm the reminder, p a part and n in range [1, Dv])
+     *  - rm = N - p¹ - p² - ... p^n (same as above - rewriting order to lookup at reminder)
+     *
+     *  - Ns = ⌊N / S⌋ (the stepped Number) or the max number of steps
+     *
+     *  - dNs = ⌊Ns / Dv⌋ default steps number by parts
+     *
+     *  - p^n = S * x^n (where x is an integer and n in range [1, Dv]) This is the value of p¹ ... p² ...
+     *
+     *  - x^n = dNs + { 1 }IF[ (dNs * Dv + n) <= Ns) && (ALLOCATE === MODE) ]
+     *
+     *  fmod is a shit!!!
+     *  php > echo fmod(100.1, 0.1);
+     *  0.099999999999989
+     *  Should be 0!
+     *
+     *  - rm according to the first definition above can now be extended to
+     *    - rm = N - Ns * S for ALLOCATE
+     *    or
+     *    - rm = N - dNs * Dv * S for EQUITY
+     * ]
+     *
+     * And perform this algorithm :
+     *  - Define S when S or Dc is set
+     *  - Define Dc when Dc or S is set
+     *
+     *  On split or before doing split (these value can be recalculated each time that S or Dc change)
+     *  TODO choice during implementation
+     *
+     *  - Define ns
+     *  - Define dNs
+     *
+     *  - Generate generator for parts
+     *
+     *  - Define rm according "to mode (so, split must be called)"
+     */
+    public function split(string $mode = self::SPLIT_MODE_ALLOCATE): Generator
+    {
+        if (!\in_array($mode, self::SPLIT_MODES, true)) {
+            throw new ResidueModeException(sprintf('Accepted modes are : %s', implode(', ', self::SPLIT_MODES)));
+        }
+
+        $maxNumberOfSteps = floor($this->value / $this->step);
+        $defaultNumberOfSteps = floor($maxNumberOfSteps / $this->divider);
+
+        $this->remainder = ($this->isNegative ? -1 : 1)
+            * $this->calculateRemainder($mode, $maxNumberOfSteps, $defaultNumberOfSteps)
+        ;
+
+        for ($i = 1; $i <= $this->divider; ++$i) {
+            $xn = $defaultNumberOfSteps;
+            if (self::SPLIT_MODE_ALLOCATE === $mode &&
+                ($defaultNumberOfSteps * $this->divider + $i) <= $maxNumberOfSteps
+            ) {
+                ++$xn;
+            }
+
+            yield ($this->isNegative ? -1 : 1) * $xn * $this->step;
+        }
+    }
+
     public function divideBy(int $divider): self
     {
-        if (0 === $divider) {
-            throw new DivideByZeroException();
+        if (1 > $divider) {
+            throw new DivideException('Dividing by less than one has no meaning');
         }
         $this->divider = $divider;
 
@@ -58,6 +130,8 @@ final class Residue
 
         $this->step = $step;
 
+        $this->decimal = $this->getDecimalLength($step);
+
         return $this;
     }
 
@@ -69,120 +143,54 @@ final class Residue
 
         $this->decimal = $decimal;
 
+        $this->step = 10 ** -$decimal;
+
         return $this;
     }
 
-    public function split(): Generator
+    public function getRemainder(): float
     {
-        if (!$this->hasStep()) {
-            return $this->splitWithoutStep();
+        if (null === $this->remainder) {
+            throw new CannotGetRemainderException('Split must have to be called before getting the remainder');
         }
 
-        return $this->splitWithStep();
+        return $this->remainder;
     }
 
-    /**
-     * Gives the limit at which the total of the result of the division has already been fully returned.
-     */
-    public function obstacle(): int
+    public function toArray(string $mode = self::SPLIT_MODE_ALLOCATE): array
     {
-        $obstacle = 0;
-        $total = 0.00;
-        while ($total < $this->value) {
-            $total += round($this->value / $this->divider, $this->decimal);
-
-            ++$obstacle;
-        }
-
-        return $obstacle;
+        return iterator_to_array($this->split($mode), false);
     }
 
-    public function remainder(): float
-    {
-        return $this->value - ($this->part() * $this->divider);
-    }
-
-    public function part(): float
-    {
-        return round($this->value / $this->divider, $this->decimal);
-    }
-
-    public function toArray(): array
-    {
-        return iterator_to_array($this->split(), false);
-    }
-
-    public function isNegative(float $value): bool
+    protected function isNegative(float $value): bool
     {
         return $value < 0.0;
     }
 
-    public function hasStep(): bool
+    protected function getDecimalLength(float $float): int
     {
-        return 0.0 !== $this->step;
+        $strFloat = (string) $float;
+        if (false === mb_strpos($strFloat, '.')) {
+            return 0;
+        }
+
+        return mb_strlen(explode('.', $strFloat)[1]);
     }
 
-    public function splitWithoutStep(): Generator
+    protected function calculateRemainder(string $mode, float $maxNumberOfSteps, float $defaultNumberOfSteps): float
     {
-        $yields = range(0, $this->divider - 1);
-        $part = $this->part();
-        $obstacle = $this->obstacle();
+        $decimalLengthOfValue = $this->getDecimalLength($this->value);
+        $remainderDecimalLength = $this->decimal < $decimalLengthOfValue ? $decimalLengthOfValue : $this->decimal;
 
-        foreach ($yields as $key) {
-            if ($obstacle <= $key) {
-                yield 0.0;
+        // Round, here, is just for php internal representation
 
-                continue;
-            }
-
-            if (!next($yields)) {
-                $yield = round($part + $this->remainder(), $this->decimal);
-
-                yield $this->isNegative ? -$yield : $yield;
-
-                break;
-            }
-
-            yield $this->isNegative ? -$part : $part;
-        }
-    }
-
-    public function splitWithStep(): Generator
-    {
-        $dividers = range(0, $this->divider - 1);
-        $value = $this->value / $this->divider;
-        $this->stepRemainder = 0.0;
-
-        foreach ($dividers as $part) {
-            $modulo = fmod($value, $this->step);
-
-            $this->stepRemainder += $modulo;
-            $parts[] = $value - $modulo;
+        if (self::SPLIT_MODE_ALLOCATE === $mode) {
+            return round($this->value - $maxNumberOfSteps * $this->step, $remainderDecimalLength);
         }
 
-        foreach ($dividers as $key => $part) {
-            $yield = $parts[$key] ?? $part;
-
-            if (round($this->stepRemainder, $this->decimal) >= round($this->step, $this->decimal)) {
-                $yield += $this->step;
-
-                $this->stepRemainder -= $this->step;
-            }
-
-            yield round($yield, $this->decimal);
-        }
-    }
-
-    public function getStepRemainder(): ?float
-    {
-        if (!$this->hasStep()) {
-            return $this->stepRemainder ?? null;
-        }
-
-        if (!isset($this->stepRemainder)) {
-            throw new CannotGetRemainderException('You must iterate through the split() method or call toArray() method to be able to get the remaining value.');
-        }
-
-        return $this->stepRemainder;
+        return round(
+            $this->value - $defaultNumberOfSteps * $this->divider * $this->step,
+            $remainderDecimalLength
+        );
     }
 }
