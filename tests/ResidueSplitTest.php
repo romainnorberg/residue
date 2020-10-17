@@ -25,8 +25,7 @@ class ResidueSplitTest extends TestCase
     ): void {
         $this->assertEquals(
             $value,
-            array_sum($expected) + $expectedRemainder
-            , 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
+            array_sum($expected) + $expectedRemainder, 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
         );
 
         $residue = Residue::create($value)->divideBy($divider);

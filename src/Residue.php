@@ -46,7 +46,7 @@ final class Residue implements ResidueInterface
      *  - `Dv` the divider given to divideBy Residue method
      *  - `Dc` the number of decimals whom can be set through decimals method and as default value of `2`
      *  - `S` the step size whom can be set to through step method and as no default value
-     *  - `M` the split mode, is one value of set [allocate, equity]
+     *  - `M` the split mode, is one value of set [allocate, equity].
      *
      * This function is described by this set of equations :
      *  - rm + ∑pⁿ = N
