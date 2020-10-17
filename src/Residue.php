@@ -112,7 +112,9 @@ final class Residue implements ResidueInterface
                 ++$xn;
             }
 
-            yield ($this->isNegative ? -1 : 1) * $xn * $this->step;
+            // Round, here, is just for php internal representation
+
+            yield round(($this->isNegative ? -1 : 1) * $xn * $this->step, $this->decimal);
         }
     }
 
