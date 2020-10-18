@@ -31,15 +31,15 @@ interface ResidueInterface
      *
      * SPLIT_MODE_ALLOCATE is default and try to allocate the maximum of the value according to step
      * example:
-     *   100/33 with step 1 will split into [34, 33, 33]
+     *   100/3 with step 1 will split into [34, 33, 33]
      *   or
-     *   101/33 with step 1 will split into [34, 34, 33]
+     *   101/3 with step 1 will split into [34, 34, 33]
      * while
      * SPLIT_MODE_EQUITY try to allocate equally the maximum of the value according to step
      * example:
-     *   100/33 with step 1 will split into [33, 33, 33]
+     *   100/3 with step 1 will split into [33, 33, 33]
      *   or
-     *   101/33 with step 1 will split again into [33, 33, 33]
+     *   101/3 with step 1 will split again into [33, 33, 33]
      */
     public function split(string $mode = self::SPLIT_MODE_ALLOCATE): Generator;
 
