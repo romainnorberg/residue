@@ -30,7 +30,14 @@
     "authors": [
         {
             "name": "Romain Norberg",
-            "email": "romainnorberg@gmail.com"
+            "email": "romainnorberg@gmail.com",
+            "role": "Maintainer, Owner, Developer"
+        },
+        {
+            "name": "Mocking Magician",
+            "email": "moreau.marc.web@gmail.com",
+            "homepage": "https://github.com/MockingMagician",
+            "role": "Developer"
         }
     ],
     "scripts": {

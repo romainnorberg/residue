@@ -8,14 +8,14 @@
 
 ### Divide a float into several parts, with distribution of any remainder.
     
-<img src=".github/media/gtihub-repository.jpg?raw=true" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%" height="100%">
+<img src=".github/media/readme.jpg?raw=true" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%" height="100%">
 
 
 #### Introduction
 
 This dependency-free package provides a `split` method to help you split float into parts, with the possible distribution of any remainder.
 
-It is also possible to specify a rounding of the divided amount, for example rounding by 0.05
+It is also possible to specify a rounding of the divided amount, for example rounding by 0.05.
 
 #### Installation
 
@@ -40,30 +40,73 @@ Benchmarks: [residue-vs-brick-money](https://github.com/romainnorberg/residue-vs
 #### Basic split
 
 ```php
-$residue = Residue::create(100)->divideBy(3)->split(); // -> 33.33, 33.33, 33.34
+Residue::create(100)->divideBy(3)->split(); // -> \Generator[33.34, 33.33, 33.33]
+
+// or
+
+Residue::create(100)->divideBy(3)->toArray(); // -> [33.34, 33.33, 33.33]
 ```
 
 #### Split with rounding (and remainder)
 
 ```php
-$residue = Residue::create(100)
+Residue::create(100)
             ->divideBy(3)
             ->step(0.05)
-            ->split(); // -> 33.35, 33.35, 33.30
+            ->split(); // -> \Generator[33.35, 33.35, 33.30]
 ```
 
 With remainder:
 
 ```php
-$residue = Residue::create(7.315)
+$r = Residue::create(7.315)
+                ->divideBy(3)
+                ->step(0.05);
+
+$r->split(); // -> \Generator[2.45, 2.45, 2.40]
+$r->getRemainder(); // -> 0.015
+```
+
+#### Split mode
+
+`SPLIT_MODE_ALLOCATE` is default mode and try to allocate the maximum of the value according to step.
+
+```php
+$r = Residue::create(100)
             ->divideBy(3)
-            ->decimal(3)
-            ->step(0.05)
-            ->split(); // -> [2.45, 2.45, 2.40]
+            ->decimal(0);
 
-...
+$r->split(); // -> \Generator[34, 33, 33]
+$r->getRemainder(); // 0
 
-$residue->getStepRemainder(); // -> 0.015
+//
+
+$r = Residue::create(101)
+            ->divideBy(3)
+            ->decimal(0);
+
+$r->split(); // -> \Generator[34, 34, 33]
+$r->getRemainder(); // 0
+```
+
+`SPLIT_MODE_EQUITY` mode try to allocate equally the maximum of the value according to step.
+
+```php
+$r = Residue::create(100)
+            ->divideBy(3)
+            ->decimal(0);
+
+$r->split(Residue::SPLIT_MODE_EQUITY); // -> \Generator[33, 33, 33]
+$r->getRemainder(); // 1
+
+//
+
+$r = Residue::create(101)
+            ->divideBy(3)
+            ->decimal(0);
+
+$r->split(Residue::SPLIT_MODE_EQUITY); // -> \Generator[33, 33, 33]
+$r->getRemainder(); // 2
 ```
 
 #### Generator
@@ -72,28 +115,28 @@ This package uses [generator](https://www.php.net/manual/en/language.generators.
 
 With foreach statement (using generator):
 ```php
-$residue = Residue::create(100)->divideBy(3);
-foreach ($residue->split() as $part) {
+$r = Residue::create(100)->divideBy(3);
+foreach ($r->split() as $part) {
     var_dump($part);
 }
 
-float(33.33)
-float(33.33)
 float(33.34)
+float(33.33)
+float(33.33)
 ```
 
 To array:
 ```php
-$residue = Residue::create(100)->divideBy(3);
-var_dump($residue->toArray());
+$r = Residue::create(100)->divideBy(3);
+var_dump($r->toArray());
 
 array(3) {
   [0]=>
-  float(33.33)
+  float(33.34)
   [1]=>
   float(33.33)
   [2]=>
-  float(33.34)
+  float(33.33)
 }
 ```
 
