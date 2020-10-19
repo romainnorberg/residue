@@ -8,7 +8,7 @@
 
 ### Divide a float into several parts, with distribution of any remainder.
     
-<img src=".github/media/readme.jpg?raw=true" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%" height="100%">
+<img src="https://raw.githubusercontent.com/romainnorberg/residue/master/.github/media/readme.jpg" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%">
 
 
 #### Introduction
