@@ -10,12 +10,13 @@
     
 <img src="https://raw.githubusercontent.com/romainnorberg/residue/master/.github/media/readme.jpg" align="center" alt="Residue Package - Illustration credit: https://refactoring.guru/" width="100%">
 
-
 #### Introduction
 
 This dependency-free package provides a `split` method to help you split float into parts, with the possible distribution of any remainder.
 
 It is also possible to specify a rounding of the divided amount, for example rounding by 0.05.
+
+**[🕹 Try out Residue on the online tester! »](https://residue-online-php-tester.herokuapp.com/)**
 
 #### Installation
 
