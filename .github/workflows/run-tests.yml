@@ -9,7 +9,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: [7.4]
+        php: [7.4, 8.0]
         dependency-version: [prefer-lowest, prefer-stable]
         include:
           - testbench: 5.*
@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
 
       - name: Cache dependencies
         uses: actions/cache@v1
