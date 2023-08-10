@@ -24,7 +24,7 @@ final class Residue implements ResidueInterface
     private float $value;
     private bool $isNegative;
     private int $divider = 1;
-    private int $decimal = 2;
+    private int $decimal = ResidueInterface::DEFAULT_DECIMAL;
     private float $step;
     private float $remainder;
 

@@ -13,6 +13,8 @@ use Generator;
 
 interface ResidueInterface
 {
+    public const DEFAULT_DECIMAL = 2;
+
     public const SPLIT_MODE_ALLOCATE = 'allocate';
     public const SPLIT_MODE_EQUITY = 'equity';
     public const SPLIT_MODES = [

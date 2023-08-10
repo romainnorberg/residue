@@ -80,7 +80,7 @@ class ResidueExceptionTest extends TestCase
             ->decimal(-1);
     }
 
-    public function provideDataForDivideException()
+    static public function provideDataForDivideException()
     {
         return [
             [0],
