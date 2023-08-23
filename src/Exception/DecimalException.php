@@ -9,8 +9,6 @@
 
 namespace Romainnorberg\Residue\Exception;
 
-use InvalidArgumentException;
-
-class DecimalException extends InvalidArgumentException
+class DecimalException extends \InvalidArgumentException
 {
 }

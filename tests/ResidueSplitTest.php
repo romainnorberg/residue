@@ -23,10 +23,9 @@ class ResidueSplitTest extends TestCase
         array $expected,
         float $expectedRemainder
     ): void {
-
         $this->assertEquals(
             $value,
-            round(array_sum($expected) + $expectedRemainder, (int) strpos(strrev($value), ".")), 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
+            round(array_sum($expected) + $expectedRemainder, (int) mb_strpos(strrev($value), '.')), 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
         );
 
         $residue = Residue::create($value)->divideBy($divider);
@@ -49,6 +48,7 @@ class ResidueSplitTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider dataProviderAllocateValues
      */
     public function it_should_split_with_mode_allocate(
@@ -72,6 +72,7 @@ class ResidueSplitTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider dataProviderEquityValues
      */
     public function it_should_split_with_mode_equity(

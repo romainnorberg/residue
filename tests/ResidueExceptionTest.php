@@ -45,6 +45,7 @@ class ResidueExceptionTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider provideDataForDivideException
      */
     public function it_should_throw_divide_exception(int $minusThanOne): void

@@ -9,8 +9,6 @@
 
 namespace Romainnorberg\Residue\Exception;
 
-use InvalidArgumentException;
-
-class StepException extends InvalidArgumentException
+class StepException extends \InvalidArgumentException
 {
 }
