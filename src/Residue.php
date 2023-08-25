@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Romainnorberg\Residue;
 
-use Generator;
 use Romainnorberg\Residue\Contracts\ResidueInterface;
 use Romainnorberg\Residue\Exception\CannotGetRemainderException;
 use Romainnorberg\Residue\Exception\DecimalException;
@@ -24,7 +23,7 @@ final class Residue implements ResidueInterface
     private float $value;
     private bool $isNegative;
     private int $divider = 1;
-    private int $decimal = 2;
+    private int $decimal = ResidueInterface::DEFAULT_DECIMAL;
     private float $step;
     private float $remainder;
 
@@ -73,7 +72,7 @@ final class Residue implements ResidueInterface
      *  - Defining rm according to `M`
      *  - Iterate [n as 1 ... Dv] : yield pⁿ
      */
-    public function split(string $mode = self::SPLIT_MODE_ALLOCATE): Generator
+    public function split(string $mode = self::SPLIT_MODE_ALLOCATE): \Generator
     {
         if (!\in_array($mode, self::SPLIT_MODES, true)) {
             throw new ResidueModeException(sprintf('Accepted modes are : %s', implode(', ', self::SPLIT_MODES)));
@@ -92,8 +91,8 @@ final class Residue implements ResidueInterface
 
         for ($i = 1; $i <= $this->divider; ++$i) {
             $xn = $defaultNumberOfSteps;
-            if (self::SPLIT_MODE_ALLOCATE === $mode &&
-                ($defaultNumberOfSteps * $this->divider + $i) <= $maxNumberOfSteps
+            if (self::SPLIT_MODE_ALLOCATE === $mode
+                && ($defaultNumberOfSteps * $this->divider + $i) <= $maxNumberOfSteps
             ) {
                 ++$xn;
             }

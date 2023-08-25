@@ -45,6 +45,7 @@ class ResidueExceptionTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider provideDataForDivideException
      */
     public function it_should_throw_divide_exception(int $minusThanOne): void
@@ -80,7 +81,7 @@ class ResidueExceptionTest extends TestCase
             ->decimal(-1);
     }
 
-    public function provideDataForDivideException()
+    static public function provideDataForDivideException()
     {
         return [
             [0],

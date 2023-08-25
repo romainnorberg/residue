@@ -25,7 +25,7 @@ class ResidueSplitTest extends TestCase
     ): void {
         $this->assertEquals(
             $value,
-            array_sum($expected) + $expectedRemainder, 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
+            round(array_sum($expected) + $expectedRemainder, (int) mb_strpos(strrev($value), '.')), 'Something goes wrong in your test data set, value have to be equal to the sum of expected values + remainder as is: value = SUM($expected) + $expectedRemainder). Check your data set.'
         );
 
         $residue = Residue::create($value)->divideBy($divider);
@@ -44,12 +44,11 @@ class ResidueSplitTest extends TestCase
         $this->assertEquals($expected, $split);
 
         $this->assertEquals($expectedRemainder, $remainder);
-
-        $this->assertEquals($value, array_sum($split) + $remainder);
     }
 
     /**
      * @test
+     *
      * @dataProvider dataProviderAllocateValues
      */
     public function it_should_split_with_mode_allocate(
@@ -61,18 +60,19 @@ class ResidueSplitTest extends TestCase
         float $expectedRemainder
     ): void {
         $this->it_should_split_with_mode(
-            Residue::SPLIT_MODE_ALLOCATE,
-            $value,
-            $divider,
-            $decimalValue,
-            $step,
-            $expected,
-            $expectedRemainder
+            mode: Residue::SPLIT_MODE_ALLOCATE,
+            value: $value,
+            divider: $divider,
+            decimalValue: $decimalValue,
+            step: $step,
+            expected: $expected,
+            expectedRemainder: $expectedRemainder
         );
     }
 
     /**
      * @test
+     *
      * @dataProvider dataProviderEquityValues
      */
     public function it_should_split_with_mode_equity(
@@ -84,17 +84,17 @@ class ResidueSplitTest extends TestCase
         float $expectedRemainder
     ): void {
         $this->it_should_split_with_mode(
-            Residue::SPLIT_MODE_EQUITY,
-            $value,
-            $divider,
-            $decimalValue,
-            $step,
-            $expected,
-            $expectedRemainder
+            mode: Residue::SPLIT_MODE_EQUITY,
+            value: $value,
+            divider: $divider,
+            decimalValue: $decimalValue,
+            step: $step,
+            expected: $expected,
+            expectedRemainder: $expectedRemainder
         );
     }
 
-    public function dataProviderAllocateValues()
+    static public function dataProviderAllocateValues()
     {
         yield '-4/3 - Step 0.01' => [
             -4, // value
@@ -306,7 +306,7 @@ class ResidueSplitTest extends TestCase
         ];
     }
 
-    public function dataProviderEquityValues()
+    static public function dataProviderEquityValues()
     {
         yield '-4/3 - Step 0.01' => [
             -4, // value

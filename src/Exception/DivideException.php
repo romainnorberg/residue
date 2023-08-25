@@ -9,8 +9,6 @@
 
 namespace Romainnorberg\Residue\Exception;
 
-use InvalidArgumentException;
-
-class DivideException extends InvalidArgumentException
+class DivideException extends \InvalidArgumentException
 {
 }

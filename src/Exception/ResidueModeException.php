@@ -9,8 +9,6 @@
 
 namespace Romainnorberg\Residue\Exception;
 
-use InvalidArgumentException;
-
-class ResidueModeException extends InvalidArgumentException
+class ResidueModeException extends \InvalidArgumentException
 {
 }

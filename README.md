@@ -147,10 +147,6 @@ array(3) {
 composer test
 ```
 
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.

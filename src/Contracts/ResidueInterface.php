@@ -9,10 +9,10 @@
 
 namespace Romainnorberg\Residue\Contracts;
 
-use Generator;
-
 interface ResidueInterface
 {
+    public const DEFAULT_DECIMAL = 2;
+
     public const SPLIT_MODE_ALLOCATE = 'allocate';
     public const SPLIT_MODE_EQUITY = 'equity';
     public const SPLIT_MODES = [
@@ -41,7 +41,7 @@ interface ResidueInterface
      *   or
      *   101/3 with step 1 will split again into [33, 33, 33]
      */
-    public function split(string $mode = self::SPLIT_MODE_ALLOCATE): Generator;
+    public function split(string $mode = self::SPLIT_MODE_ALLOCATE): \Generator;
 
     public function toArray(string $mode = self::SPLIT_MODE_ALLOCATE): array;
 
